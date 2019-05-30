@@ -1,7 +1,7 @@
 const express = require('express');
-// const http = require('http'); //estou requerendo o módulo
+const cors = require('cors');
 
-const comidas = [ //não precisa das aspas nas propriedades
+const comidas = [ 
     {
         "nome": "Paçoquita",
         "descricao": "Melhor doce",
@@ -55,8 +55,12 @@ const comidas = [ //não precisa das aspas nas propriedades
 ]
 
 const server = express()
+
+server.use(cors());
 server.get('/comidas', (request, response) => {
-    response.send('Boa noite!');
+    // response.header("Access-Control-Allow-Origin", "*");
+    const res_json = response.json({comidas});
+    response.send(res_json);
 })
 
 server.listen(3010)
