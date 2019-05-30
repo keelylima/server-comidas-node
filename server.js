@@ -54,26 +54,9 @@ const comidas = [ //não precisa das aspas nas propriedades
     },
 ]
 
-const server = http.createServer(function (request, response) {  //função que mora dentro do http modules, ela recebe requisições e também dá respostas
-    if (request.url === '/') {
-        response.end('Hello World'); //mostra pro usuario
-    } else if (request.url === '/comidas') {
-        // response.end('comidinhas show'); não vai entrar nesse response, vai no get direto
-        if (request.method === 'GET') {
-            response.writeHead(200, {
-                // "Content-Type": "text/html;charset=utf-8" //avisando que ele consegue receber/ler um arquivo text/html
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin":"*"
-            })
-            response.write(JSON.stringify(comidas))
-            response.end();
-        } else if (request.method === 'POST') {
-            response.writeHead(201, {
-                "Content-Type": "text/html;charset=utf-8"
-            })
-            response.end('<h1>Tem post não</h1>');
-        }
-    }
+const server = express()
+server.get('/comidas', (request, response) => {
+    response.send('Boa noite!');
 })
 
 server.listen(3010)
