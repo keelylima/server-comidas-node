@@ -58,7 +58,6 @@ const server = express()
 
 server.use(cors());
 server.get('/comidas', (request, response) => {
-    // response.header("Access-Control-Allow-Origin", "*");
     const res_json = response.json({comidas});
     response.send(res_json);
 })
