@@ -1,5 +1,5 @@
-const http = require('http'); //estou requerendo o módulo
-const utf8 = require('utf8');
+const express = require('express');
+// const http = require('http'); //estou requerendo o módulo
 
 const comidas = [ //não precisa das aspas nas propriedades
     {
