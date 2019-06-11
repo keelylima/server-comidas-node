@@ -1,16 +1,43 @@
-const repository = require('./ComidasRepository')
-const getAll = () => {
-    return repository.comidas;
+const { connect } = require('./ComidasRepository');
+const { comidasModel } = require('./ComidasSchema');
+connect()
+
+// const repository = require('./ComidasRepository')
+// repository.connect();
+
+const getAll = async () => {
+    return comidasModel.find((error, comidas) => {
+        if(error) {
+            console.error(error);
+        }
+        return comidas;
+    });
+}
+
+const getById = async (id) => {
+    return comidasModel.findById(
+        id,
+        function(error, comida) {
+            return comida;
+        }
+    )
+
+    // const comidaCadastrada = getAll().find((item) => {
+    //     return item.id === id;
+    // })
+    // return comidaCadastrada;
 }
 
 const add = (comida) => {
-    comida.id = Math.random().toString(36).substr(-8);
-    // comidas.prato.push(comida)
-    getAll().prato.push(comida);
+    const novaComida = new comidasModel({
+        nome: comida.nome,
+        descricao: comida.descricao
+    })
+    novaComida.save()
 }
 
 const update = (id, comida) => {
-    let comidaCadastrada = getAll().prato.find((item) => {
+    let comidaCadastrada = getAll().find((item) => {
         return item.id === id;
     })
     if (comidaCadastrada === undefined) {
@@ -29,7 +56,7 @@ const update = (id, comida) => {
         }
 
         remove(id)
-        getAll().prato.push(comidaAtualizada);
+        getAll().push(comidaAtualizada);
 
         return true;
     }
@@ -37,7 +64,7 @@ const update = (id, comida) => {
 
 const remove = (id) => {
 
-    getAll().prato = getAll().prato.filter((item) => {
+    getAll().prato = getAll().filter((item) => {
         return item.id !== id;
     })
 
@@ -47,5 +74,6 @@ module.exports = {
     getAll,
     add,
     remove,
-    update
+    update,
+    getById
 }
