@@ -13,10 +13,23 @@ server.get('/comidas',  async (request, response) => {
     .then((listaDeComidas) => response.send(listaDeComidas));
 })
 
-server.get('/comidas/:id', async (request, response) => {
+server.get('/comidas/:id', (request, response) => {
     const id = request.params.id
     controller.getById(id)
-    .then((comida) => response.send(comida));
+    .then((comida) => {
+        if(!comida){ //comida é undefined ou null
+            response.sendStatus(404)
+        } else {
+            response.send(comida)
+        }
+    })
+    .catch((error) => {
+        if(error.name === "CastError"){
+            response.sendStatus(400)
+        } else {
+            response.sendStatus(500)
+        }
+    })
     // const id = request.params.id;
     // response.send(controller.getById(id));
 })
@@ -27,17 +40,34 @@ server.post('/comidas', (request, response) => {
 
 server.patch('/comidas/:id', (request, response) => {
     const id = request.params.id;
-    const sucesso = controller.update(id, request.body);
-    if(sucesso) {
-        response.sendStatus(204);
-    } else {
-        response.sendStatus(404);
-    }
+    // const sucesso = controller.update(id, request.body);
+    // if(sucesso) {
+    //     response.sendStatus(204);
+    // } else {
+    //     response.sendStatus(404);
+    // }
+    controller.update(id, request.body)
+    .then((comida) => {
+        if(!comida) {
+            response.sendStatus(404)
+        } else {
+            response.send(comida)
+        }
+    })
+    .catch((error) => {
+        if(error.name === "MongoError" || error.name === "CastError"){
+            response.sendStatus(400) //bad request
+        } else {
+            response.sendStatus(500)
+        }
+    })
 })
 
-server.delete('/comidas/:id', (request, response) => {
-    controller.remove(request.params.id);
-    response.sendStatus(204);
+server.delete('/comidas/:id', async (request, response) => {
+    // controller.remove(request.params.id);
+    // response.sendStatus(204);
+    controller.remove(request.params.id)
+    .then((comida) => response.sendStatus(204))
 })
 
 server.listen(3010)

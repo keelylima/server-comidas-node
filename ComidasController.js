@@ -14,12 +14,12 @@ const getAll = async () => {
     });
 }
 
-const getById = async (id) => {
+const getById = (id) => {
     return comidasModel.findById(
-        id,
-        function(error, comida) {
-            return comida;
-        }
+        id
+        // function(error, comida) {
+        //     return comida;
+        // }
     )
 
     // const comidaCadastrada = getAll().find((item) => {
@@ -29,44 +29,52 @@ const getById = async (id) => {
 }
 
 const add = (comida) => {
-    const novaComida = new comidasModel({
-        nome: comida.nome,
-        descricao: comida.descricao
-    })
-    novaComida.save()
+    const novaComida = new comidasModel(comida)
+    return novaComida.save()
 }
 
 const update = (id, comida) => {
-    let comidaCadastrada = getAll().find((item) => {
-        return item.id === id;
-    })
-    if (comidaCadastrada === undefined) {
-        return false;
-    } else {
-        // if (comida.nome) { //if(comida.nome !== undefined)
-        //     comidaCadastrada.nome = comida.nome;
+
+    return comidasModel.findByIdAndUpdate(
+        id,
+        { $set: comida }, //set pra não rolar put, pegar exatamente os campos que eu passar
+        { new: true } //pra vir a nova comida
+        // function(error, comida) {
+        //     return comida
         // }
-        // if (comida.descricao) {
-        //     comidaCadastrada.descricao = comida.descricao;
-        // }
+    )
 
-        const comidaAtualizada = {
-            ...comidaCadastrada, //spread operator do ES6
-            ...comida
-        }
+    // let comidaCadastrada = getAll().find((item) => {
+    //     return item.id === id;
+    // })
+    // if (comidaCadastrada === undefined) {
+    //     return false;
+    // } else {
+    //     // if (comida.nome) { //if(comida.nome !== undefined)
+    //     //     comidaCadastrada.nome = comida.nome;
+    //     // }
+    //     // if (comida.descricao) {
+    //     //     comidaCadastrada.descricao = comida.descricao;
+    //     // }
 
-        remove(id)
-        getAll().push(comidaAtualizada);
+    //     const comidaAtualizada = {
+    //         ...comidaCadastrada, //spread operator do ES6
+    //         ...comida
+    //     }
 
-        return true;
+    //     remove(id)
+    //     getAll().push(comidaAtualizada);
+
+    //     return true;
     }
-}
 
 const remove = (id) => {
 
-    getAll().prato = getAll().filter((item) => {
-        return item.id !== id;
-    })
+    return comidasModel.findByIdAndDelete(id)
+
+    // getAll().prato = getAll().filter((item) => {
+    //     return item.id !== id;
+    // })
 
 }
 
