@@ -35,7 +35,24 @@ server.get('/comidas/:id', (request, response) => {
 })
 
 server.post('/comidas', (request, response) => {
-    response.status(200).send(controller.add(request.body));
+    // response.status(200).send(controller.add(request.body));
+    controller.add(request.body)
+    .then((comida) => {
+        const id = comida._id
+        response.send(comida.id)
+        // if(!comida.nome){
+        //     response.sendStatus(404);
+        // } else {
+        //     response.send(comida.id);
+        // }
+    })
+    .catch((error) => {
+        if(error.name === "ValidationError") {
+            response.sendStatus(400)
+        } else {
+            response.sendStatus(500)
+        }
+    })
 })
 
 server.patch('/comidas/:id', (request, response) => {
@@ -67,7 +84,19 @@ server.delete('/comidas/:id', async (request, response) => {
     // controller.remove(request.params.id);
     // response.sendStatus(204);
     controller.remove(request.params.id)
-    .then((comida) => response.sendStatus(204))
+    .then((comida) =>{
+        if(!comida) {
+            response.sendStatus(404)
+        } else {
+            // response.send(comida)
+            response.sendStatus(204)
+        }
+    })
+    .catch((error) => {
+        if(error) {
+            response.sendStatus(500)
+        }
+    })
 })
 
 server.listen(3010)
